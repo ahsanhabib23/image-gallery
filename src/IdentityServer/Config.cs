@@ -21,7 +21,15 @@ namespace IdentityServer
                 "roles",
                 "Your role(s)",
                 new List<string>(){ "role" }
-                )
+                ),
+                new IdentityResource(
+                    "country",
+                    "The country you're living in",
+                    new List<string>() { "country" }),
+                new IdentityResource(
+                    "subscriptionlevel",
+                    "Your subscription level",
+                    new List<string>() { "subscriptionlevel" })
             };
 
         public static IEnumerable<ApiScope> ApiScopes =>
@@ -68,7 +76,9 @@ namespace IdentityServer
                         IdentityServerConstants.StandardScopes.Address,
                         IdentityServerConstants.StandardScopes.Email,
                         "roles",
-                        "imagegalleryapi"
+                        "imagegalleryapi",
+                        "country",
+                        "subscriptionlevel"
                     },
                     ClientSecrets =
                     {

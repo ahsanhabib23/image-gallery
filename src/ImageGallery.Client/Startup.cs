@@ -30,6 +30,16 @@ namespace ImageGallery.Client
         {
             services.AddControllersWithViews()
                  .AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
+            
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("CanOrderFrame", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("country", "be");
+                    policy.RequireClaim("subscriptionlevel", "PayingUser");
+                });
+            });
 
             services.AddHttpContextAccessor();
 
@@ -72,9 +82,13 @@ namespace ImageGallery.Client
                 options.Scope.Add("address");
                 options.Scope.Add("email");
                 options.Scope.Add("roles");
+                options.Scope.Add("country");
+                options.Scope.Add("subscriptionlevel");
                 options.Scope.Add("imagegalleryapi");
                 options.ClaimActions.MapUniqueJsonKey("address", "address");
                 options.ClaimActions.MapUniqueJsonKey("role", "role");
+                options.ClaimActions.MapUniqueJsonKey("country", "country");
+                options.ClaimActions.MapUniqueJsonKey("subscriptionlevel", "subscriptionlevel");
                 // options.ClaimActions.Remove("nbf"); // Claims we want to keep comes with id_token
                 options.ClaimActions.DeleteClaim("sid"); // Claims we want to delete comes with id_token
                 options.ClaimActions.DeleteClaim("idp"); // Claims we want to delete comes with id_token
@@ -82,8 +96,8 @@ namespace ImageGallery.Client
                 options.ClaimActions.DeleteClaim("auth_time"); // Claims we want to delete comes with id_token
                 options.SaveTokens = true;
                 options.ClientSecret = "secret";
-                options.GetClaimsFromUserInfoEndpoint = true;
                 options.Prompt = "consent";
+                options.GetClaimsFromUserInfoEndpoint = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     NameClaimType = JwtClaimTypes.GivenName,
